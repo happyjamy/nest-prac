@@ -54,9 +54,11 @@ describe('MoviesService', () => {
         year: 2020,
         genres: ["horror"]
       })
-      const beforeMovies = service.getAll();
+      const beforeMovies = service.getAll(); //기존 배열. 얕은복사.
       service.delete(1);
-      const afterMovies = service.getAll();
+      const afterMovies = service.getAll(); // filter로 인해 새로운 배열이 반환됨. 참조안함.
+      console.log(beforeMovies);
+      console.log(afterMovies);
       expect(afterMovies.length).toBeLessThan(beforeMovies.length);
     })
     
@@ -90,6 +92,19 @@ describe('MoviesService', () => {
         expect(e).toBeInstanceOf(NotFoundException);
         expect(e.message).toEqual("Movie with ID 123232 not found");
       }
+    })
+  })
+
+  describe("create", ()=>{
+    it("should create a movie", ()=>{
+      const beforeMovies = [...service.getAll()]; //깊은복사. 
+      service.create({
+        title: "test",
+        year: 2020,
+        genres: ["horror"]
+      });
+      const afterMovies = service.getAll();
+      expect(afterMovies.length).toBeGreaterThan(beforeMovies.length);
     })
   })
 });
